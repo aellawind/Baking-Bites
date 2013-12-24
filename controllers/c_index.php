@@ -12,16 +12,23 @@ class index_controller extends base_controller {
 	/*-------------------------------------------------------------------------------------------------
 	Accessed via http://localhost/index/index/
 	-------------------------------------------------------------------------------------------------*/
-	public function index() {	
+	public function index($error=NULL) {
 		
 		# Any method that loads a view will commonly start with this
 		# First, set the content of the template with a view file
 			$this->template->content = View::instance('v_index_index');
 			
 		# Now set the <title> tag
-			$this->template->title = "Hello World";
-	
-		# CSS/JS includes
+			$this->template->title = "Amira's Microblog";
+
+		# Pass in the login module
+			$this->template->content->login = View::instance('v_login_module');
+
+		# Pass in a possible error
+			$this->template->content->login->error = $error;
+
+
+			# CSS/JS includes
 			/*
 			$client_files_head = Array("");
 	    	$this->template->client_files_head = Utils::load_client_files($client_files);
@@ -29,9 +36,10 @@ class index_controller extends base_controller {
 	    	$client_files_body = Array("");
 	    	$this->template->client_files_body = Utils::load_client_files($client_files_body);   
 	    	*/
-	      					     		
+
 		# Render the view
 			echo $this->template;
+
 
 	} # End of method
 	

@@ -1,66 +1,33 @@
-<!-- Computer players area -->
+<div id="main_page">
+						
+	<?php if(!$user): ?>
+		<h1>Welcome to Baking Bites!</h1>
+		Ever dying to bake something, but it's 3am and no grocery stores are open? What can you bake with the 
+		few items lurking around your pantry, you ask yourself? Two bananas, eggs, a chocolate bar, and sugar are all
+		you have. Yes, you could peruse the internet until you find just the perfect recipe that needs no more 
+		and no less than what you have, or you could search up Baking Bites! Baking Bites is the perfect place 
+		to share your favorite recipes and to find the perfect recipe for your pantry. Sign up now to search through a
+		huge database of recipes from all over the web and add them to your catalogue.
+		<!--Display the login module-->
+		<?php echo $login; ?>
 
-<div id = "computer1" class = "computerCards1">
-	<div class="textBox name">Computer 1</div>
-	<div id="computer1Score" class="textBox">&nbsp;</div>
-	<div id="computer1Cards" class="cardArea"></div>
+		<p>If you are not yet a member, please <a href="/users/signup" class="userlink">sign up</a>!</p>
+
+
+	<?php else: ?>
+		<h1>Welcome Back to Baking Bites, <?=$user->first_name ?>!</h1>
+		<p>
+		Ever dying to bake something, but it's 3am and no grocery stores are open? What can you bake with the 
+		few items lurking around your pantry, you ask yourself? Two bananas, eggs, a chocolate bar, and sugar are all
+		you have. Yes, you could peruse the internet until you find just the perfect recipe that needs no more 
+		and no less than what you have, or you could search up Baking Bites! Baking Bites is the perfect place 
+		to share your favorite recipes and to find the perfect recipe for your pantry. Search for the perfect recipe,
+		add them to your catalogue, bake them, and upvote or downvote them! Even add your own recipe to our database.
+		</p>
+		<img src="http://1.bp.blogspot.com/-8w4STtQghvo/Umk-uf1ChiI/AAAAAAAABcw/8-Fh_fjnIVE/s1600/DSC_1017.JPG" height="222" width="335" alt="cake">
+		<br><br>
+	<?php endif; ?>
+
+	
+	
 </div>
-
-<div id = "computer2" class = "computerCards2">
-	<div class="textBox name">Computer 2</div>
-	<div id="computer2Score" class="textBox">&nbsp;</div>
-	<div id="computer2Cards" class="cardArea"></div>
-</div>
-
-<div id = "computer3" class = "computerCards3">
-	<div class="textBox name">Computer 2</div>
-	<div id="computer3Score" class="textBox">&nbsp;</div>
-	<div id="computer3Cards" class="cardArea"></div>
-</div>
-
-<!-- Main player's area -->
-
-<div id = "player0" class="playingField">
-	<div class="textBox name">Player</div>
-	<div id="player0Score" class="textBpx">&nbsp;</div>
-	<div id="player0Cards" class="cardArea"></div>
-</div>
-
-<!--Game buttons -->
-
-
-
-<input id="playbutton" type="reset" value="Play!" onclick="startRound()">
-
-
-
-		<!--<input id = "playbutton" type = "button" value="Play!" onclick="startRound">-->
-
-
-<script>
-$("#playbutton").click(function() {
-    $('#playbutton').css('display', 'none');
-    
-})
-
-</SCRIPT>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<p>
-	<strong>Since everything is in working order, you should now delete <?php echo APP_PATH?>diagnostics.php</strong>
-</p>
