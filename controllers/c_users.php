@@ -248,7 +248,6 @@ class users_controller extends base_controller {
 
         $q = "SELECT first_name, 
                     last_name, 
-                    nickname,
                     bakedgood,
                     cake,
                     cookie,

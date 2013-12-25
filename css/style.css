@@ -16,6 +16,17 @@ h3 {
 	color: #7D775C;
 	}
 
+h5 {
+	font: normal 1.4em georgia, sans-serif; 
+	margin-bottom: 0; 
+	color: #323025;
+	text-decoration:bold;
+}
+
+h5 a {
+	color: #585340;
+}
+
 
 body {
 	
@@ -26,10 +37,7 @@ body {
 	linear-gradient(60deg, rgba(0,0,0,.1) 25%, transparent 25%, transparent 75%, rgba(0,0,0,.1) 75%, rgba(0,0,0,.1)),
 	linear-gradient(120deg, rgba(0,0,0,.1) 25%, transparent 25%, transparent 75%, rgba(0,0,0,.1) 75%, rgba(0,0,0,.1));
 	background-size: 70px 120px;
-
-	
 	text-align: center;
-
 	font: 100% georgia, sans-serif;
 	line-height: 1.5;
 	color: #555753; 
@@ -62,7 +70,7 @@ ul.menu li {
  
 ul li a {
     display: block;
-    padding: 0 20px;
+    padding: 0 10px;
     border-left: 1px solid rgba(255,255,255,0.1);
     border-right: 1px solid rgba(0,0,0,0.1);
     text-align: center;
@@ -76,7 +84,7 @@ ul li a {
     text-decoration:none;
     color:#363636;
     text-transform:uppercase;
-    font-size:15px;
+    font-size:11px;
     font-weight:bold;
     }
  
@@ -134,9 +142,9 @@ ul li.active a{
 }
 
 
-/* Recipe wrapper */
+/* Recipe wrapper and profile wrapper */
 
-.recipe {
+.recipe, .profile {
 	width:80%;
 	background:rgba(180,160,136,1);
 	margin: 50px auto;
@@ -151,12 +159,34 @@ ul li.active a{
 
 }
 
+/* Create a prettier submission field. */
+
+.submissionfield { 
+
+	color: #781351;
+	background: #fee3ad;
+	height: 300%;
+	border: 1px solid #927B5F;
+
+}
+
+/* Limit sizes of recipe images */
+.recipe_image {
+	max-width:620px;
+	height:auto;
+}
+
 /* Miscellaneous CSS elements to format smaller things */
 
 #linktextfield {
 	width:650px;
 	height:25px;
 	font: 18px/140% Georgia,sans-serif;
+}
+
+.bigtextfield {
+	width:500px;
+	height:170px;
 }
 
 .small {
@@ -205,17 +235,6 @@ a.userlink {
 a.userlink:hover {
 
 	border-bottom:2px dotted;
-
-}
-
-/* Create a prettier submission field. */
-
-.submissionfield { 
-
-	color: #781351;
-	background: #fee3ad;
-	height: 300%;
-	border: 1px solid #927B5F;
 
 }
 

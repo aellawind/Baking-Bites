@@ -22,7 +22,7 @@ class recipes_controller extends base_controller {
 
         # Setup view
         $this->template->content = View::instance('v_recipes_add');
-        $this->template->title   = "Add A Recipe";
+        $this->template->title   = "Add Recipe";
         
         # Load JS files
         $client_files_body = Array(
@@ -38,8 +38,12 @@ class recipes_controller extends base_controller {
 
     public function p_add_recipes() {
     	
+    	if($_POST['url'] == "") {
+    		echo "Please enter a link.";
+    		return;
+    	}
     	# Associate this recipe with this user who originally added it
-        $_POST['added_by']  = $this->user->user_id;
+        $_POST['added_by']  = $this->user->username;
 
         # Unix timestamp of when this post was created / modified
         $_POST['created']  = Time::now();
@@ -247,7 +251,7 @@ class recipes_controller extends base_controller {
 
     }
 
-    public function recipe($url_id = NULL) {
+    public function recipe($recipe_id = NULL) {
 
         # Users cannot try to access this page unless logged in. They're sent to home if they do.
         if(!$this->user) {
@@ -262,19 +266,104 @@ class recipes_controller extends base_controller {
                     directions_list,
                     added_by,
                     image_url,
-                    url
+                    url,
+                    recipeimages
                 FROM recipes
-                WHERE url_id = '".$url_id."'";
+                WHERE recipe_id = '".$recipe_id."'";
         
 
         $recipe = DB::instance(DB_NAME)->select_rows($q);
         
         # Pass the data to the view
-        $this->template->content->recipe = $recipe;    
+        $this->template->content->recipe = $recipe;   
 
         echo $this->template;
 
         
+    }
+
+    public function add_your_own() {
+
+        # Users cannot try to access this page unless logged in. They're sent to home if they do.
+        if(!$this->user) {
+            Router::redirect('/');
+        }
+
+        # Setup view
+        $this->template->content = View::instance('v_recipes_add_your_own');
+        $this->template->title   = "Add Your Own Recipe";
+        
+        # Load JS files
+        $client_files_body = Array(
+        	"/js/jquery.form.min.js",
+        	"/js/own_recipe_add.js",
+        	"/js/checksize.js"
+        );
+
+        $this->template->client_files_body = Utils::load_client_files($client_files_body);
+        # Render template
+        echo $this->template;
+
+    }
+
+    public function p_add_your_own() {
+       
+        # Load JS files
+        $client_files_body = Array(
+        	"/js/jquery.form.min.js",
+        	"/js/recipes_add.js",
+        	"/js/checksize.js"
+        );
+
+        $this->template->client_files_body = Utils::load_client_files($client_files_body);
+
+        if($_POST['title'] == "" || $_POST['ingredients_list'] =="" || $_POST['directions_list'] =="") {
+        	echo "Please fill in all fields.";
+        	return;
+        }
+
+        # Associate this recipe with this user who originally added it
+        $_POST['added_by']  = $this->user->username;
+
+        # Unix timestamp of when this post was created
+        $_POST['created']  = Time::now();
+
+        $data = Array(
+		    'title' => $_POST['title'], 
+		    'ingredients_list' => $_POST['ingredients_list'], 
+		    'directions_list' =>  $_POST['directions_list'],
+		    'created' => $_POST['created'],
+		    'added_by' => $_POST['added_by']);
+
+	    # Insert data
+        # Note we didn't have to sanitize any of the $_POST data because we're using the insert method which does it for us
+        $recipe_id = DB::instance(DB_NAME)->insert('recipes', $data);
+
+        if($_FILES) {
+	        
+	        if($_FILES['recipeimages']['error'] ==0) {
+		        // Image upload
+		        echo "There's an image";
+		        Upload::upload($_FILES, "/uploads/recipeimages/", array("JPG", "JPEG", "jpg", "gif", "GIF", "png", "PNG"), $recipe_id);
+
+		        $filename = $_FILES['recipeimages']['name'];
+		        $extension = substr($filename, strrpos($filename, '.'));
+		        $recipeimages = "/uploads/recipeimages/".$recipe_id.$extension;
+		        $img = Array('recipeimages' => $recipeimages);
+		        DB::instance(DB_NAME)->update("recipes", $img, "WHERE recipe_id = '".$recipe_id."'");
+	        }
+
+	        else if($_FILES['recipeimages']['error']==2) {
+	        	echo "Your image exceeds the max file size limit.";
+	        }
+
+
+	    }
+
+	    else {
+	    	echo "Your recipe was added.";
+	    }
+
     }
 
 

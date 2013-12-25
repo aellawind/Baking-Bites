@@ -1,20 +1,20 @@
 // Set up the options for ajax
 var options = {
 	type: 'POST',
-	url: '/recipes/p_add_recipes/',
+	url: '/recipes/p_add_your_own/',
 	beforeSubmit: function () {
-		$('#reciperesults').html("Looking for your recipe..."); 
+		$('#ownrecipe').html("Adding your recipe..."); 
 	},
 	success: function(response) {
 
 		if (response=="Your recipe was added.") {
 			$("#recipeform")[0].reset();
-			$('#reciperesults').html(response);
-			$('#reciperesults').css('color', '#A52A2A');
+			$('#ownrecipe').html(response);
+			$('#ownrecipe').css('color', '#A52A2A');
 		}
 		else {
-			$('#reciperesults').html(response);
-			$('#reciperesults').css('color', 'red');
+			$('#ownrecipe').html(response);
+			$('#ownrecipe').css('color', 'red');
 		}
 	}
 };

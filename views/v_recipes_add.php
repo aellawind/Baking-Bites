@@ -20,3 +20,6 @@ your fellow bakers can find it too!</h2>
 <a href="http://www.tasteofhome.com/" id="recipelinks">TasteofHome.com</a><br>
 <a href="http://www.verybestbaking.com/" id="recipelinks">VeryBestBaking.com</a>
 </h4>
+
+<h5>Or... <a href="/recipes/add_your_own">add your own!</a></h5>
+<br><br>

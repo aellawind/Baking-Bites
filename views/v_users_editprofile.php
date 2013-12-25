@@ -1,4 +1,4 @@
-<div class ="post">
+<div class ="profile">
 
 	<p>Hello, <?=$user->first_name ?> !</p>
 
