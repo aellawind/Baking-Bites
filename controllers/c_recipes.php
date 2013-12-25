@@ -2,15 +2,15 @@
 
 class recipes_controller extends base_controller {
 
-    #public function __construct() {
-    #    parent::__construct();
+    public function __construct() {
+        parent::__construct();
 
         # Make sure user is logged in if they want to use anything in this controller
-    #    if(!$this->user) {
-    #        Router::redirect("/");
+        if(!$this->user) {
+            Router::redirect("/");
         
-    #    }
-    #}
+        }
+    }
 
     # This is the page where users can add a post and also see the posts they've already added.
     public function index() {
@@ -23,18 +23,26 @@ class recipes_controller extends base_controller {
         # Setup view
         $this->template->content = View::instance('v_recipes_add');
         $this->template->title   = "Add A Recipe";
+        
+        # Load JS files
+        $client_files_body = Array(
+        	"/js/jquery.form.min.js",
+        	"/js/recipes_add.js"
+        );
+
+        $this->template->client_files_body = Utils::load_client_files($client_files_body);
+        # Render template
         echo $this->template;
 
     }
 
     public function p_add_recipes() {
     	
-    	# Associate this post with this user
-        #$_POST['user_id']  = $this->user->user_id;
+    	# Associate this recipe with this user who originally added it
+        $_POST['added_by']  = $this->user->user_id;
 
         # Unix timestamp of when this post was created / modified
         $_POST['created']  = Time::now();
-        $_POST['modified'] = Time::now();
 
         function scrape_between($data, $start, $end){
 	        $data = stristr($data, $start); // Stripping all data from before $start
@@ -46,20 +54,24 @@ class recipes_controller extends base_controller {
 		
 		if (!filter_var($_POST['url'], FILTER_VALIDATE_URL,FILTER_FLAG_PATH_REQUIRED)) {
 			echo "Invalid link.";
+			return;
 		}
 		else if (stripos($_POST['url'], 'tasteofhome') !== false) {
         	// TASTE OF HOME RECIPES
-	        $results = Utils::curl('http://www.tasteofhome.com/recipes/crab-cheese-fondue');
+	        $results = Utils::curl($_POST['url']);
 	        // Get the recipe title
-	        $title = scrape_between($results, "<title>", " | Taste of Home</title>"); 
+	        $title = trim(strip_tags(scrape_between($results, "<title>", " | Taste of Home</title>"),'<p><b><i>')); 
 	        // Get the ingredients block
 	        $ingredients_list = scrape_between($results, "<ul class=\"rd_ingredients\">", "</ul>");
 	        // Put each ingredient into an array
 	        $separate_ingredients = explode("<li class=\"rd_ingredient\">", $ingredients_list);
 	        foreach ($separate_ingredients as $separate_ingredient) {
 	        	if ($separate_ingredient != "") {
-	        		$result_ingredients[] = scrape_between($separate_ingredient,"itemprop=\"ingredients\">", "</li>");
-	        		#echo 'this is one:', $separate_ingredient;
+	        		$ingredient = trim(strip_tags(scrape_between($separate_ingredient,"itemprop=\"ingredients\">", "</li>"), '<p><b><i>'));
+	        		if ($ingredient != "") {
+	        			$result_ingredients[] = $ingredient;
+	        		}
+	        		
 	        	}
 	        }
 	        // Get the directions
@@ -67,7 +79,10 @@ class recipes_controller extends base_controller {
 	        $separate_directions = explode("<li class=\"rd_ingredient\">", $directions_list);
 	        foreach ($separate_directions as $separate_direction) {
 	        	if ($separate_direction != "") {
-	        		$result_directions[] = scrape_between($separate_direction, "<span class=\"rd_name\">", "</span>");
+	        		$direction = trim(strip_tags(scrape_between($separate_direction, "<span class=\"rd_name\">", "</span>"),'<p><b><i>'));
+	        		if ($direction != "") {
+	        			$result_directions[] = $direction;
+	        		}
 	        	}
 	        }
         }
@@ -76,9 +91,9 @@ class recipes_controller extends base_controller {
         else if (stripos($_POST['url'], 'allrecipes') !== false) {
        
 	        //ALLRECIPES 
-	        $results = Utils::curl('http://allrecipes.com/Recipe/Good-Old-Fashioned-Pancakes');
+	        $results = Utils::curl($_POST['url']);
 	        // Get the title
-	        $title = scrape_between($results, "<title>", "- Allrecipes.com");
+	        $title = trim(strip_tags(scrape_between($results, "<title>", "- Allrecipes.com"),'<p><b><i>'));
 	        // Get the ingredients block
 	        $ingredients_list = scrape_between($results, "<ul class=\"ingredient-wrap\">", "</ul>");
 	        $separate_ingredients = explode("itemprop=\"ingredients\"", $ingredients_list);
@@ -86,7 +101,10 @@ class recipes_controller extends base_controller {
 	        	if ($separate_ingredient !="") {
 	        		$amount = scrape_between($separate_ingredient, "class=\"ingredient-amount\">","</span>");
 	        		$ingredient = scrape_between($separate_ingredient, "class=\"ingredient-name\">","</span>");
-	        		$result_ingredients[] = $amount." ".$ingredient;
+	        		$ingredient = trim(strip_tags($amount." ".$ingredient, '<p><b><i>'));
+	        		if ($ingredient != "") {
+	        			$result_ingredients[] = $ingredient;
+	        		}
 	        	}
 	        }
 	        // Get the directions
@@ -94,7 +112,10 @@ class recipes_controller extends base_controller {
 	        $separate_directions = explode("<li>", $directions_list);
 	        foreach ($separate_directions as $separate_direction) {
 	        	if ($separate_direction !="") {
-	        		$result_directions[] = scrape_between($separate_direction, "plaincharacterwrap break\">", "</span>");
+	        		$direction = trim(strip_tags(scrape_between($separate_direction, "plaincharacterwrap break\">", "</span>"), '<p><b><i>'));
+	        		if ($direction != "") {
+	        			$result_directions[] = $direction;
+	        		}
 	        	}
 	        }
         }
@@ -102,23 +123,36 @@ class recipes_controller extends base_controller {
         else if (stripos($_POST['url'], 'epicurious') !== false) {
        
 	        //EPICURIOUS
-	        $results = Utils::curl('http://www.epicurious.com/recipes/food/views/Slow-Roasted-Salmon-with-Fennel-Citrus-and-Chiles-51210470');
+	        $results = Utils::curl($_POST['url']);
 	        // Get the title
-	        $title = scrape_between($results, "<title>", " | Epicurious.com");
+	        $title = trim(strip_tags(scrape_between($results, "<title>", " | Epicurious.com"),'<p><b><i>'));
+	        //Get an image (if it exists)
+	        $imageblock = trim(scrape_between($results, "<span id=\"recipe_image\">", "<div"));
+	        $image = "http://www.epicurious.com".trim(scrape_between($imageblock, "<img src=\"", "\""));
+
 	        // Get the ingredients block
 	        $ingredients_list = scrape_between($results, "<div id=\"ingredients\">", "</ul>");
 	        $separate_ingredients = explode("<li class=\"ingredient\">", $ingredients_list);
 	        foreach ($separate_ingredients as $separate_ingredient) {
 	        	if ($separate_ingredient !="") {
-	        		$result_ingredients[] = scrape_between($separate_ingredient, "<span>","</span>");
+	        		$ingredient = trim(strip_tags(scrape_between($separate_ingredient, "<span>","</span>"),'<p><b><i>'));
+	        		if ($ingredient != "") {
+	        			$result_ingredients[] = $ingredient;
+	        		}
+
 	        	}
 	        }
 	        // Get the directions
 	        $directions_list = scrape_between($results, "<div id=\"preparation\" class=\"instructions\">", "</div>");
 	        $separate_directions = explode("<p class=", $directions_list);
 	        foreach ($separate_directions as $separate_direction) {
-	        	if ($separate_direction !="") {
-	        		$result_directions[] = scrape_between($separate_direction, "instruction\">", "</p>");
+	        	if ($separate_direction != "") {
+	        		
+	        		$direction = trim(strip_tags(scrape_between($separate_direction, "instruction\">", "</p>"),'<p><b><i>'));
+	        		if ($direction != "") {
+	        			$result_directions[] = $direction;
+	        		}
+
 	        	}
 	        }
 	    }
@@ -126,15 +160,18 @@ class recipes_controller extends base_controller {
         else if (stripos($_POST['url'], 'simplyrecipes') !== false) {
 
 	        // Simply Recipes
-	        $results = Utils::curl('http://www.simplyrecipes.com/recipes/pear_tarte_tatin/');
+	        $results = Utils::curl($_POST['url']);
 	        // Get the title
-	        $title = scrape_between($results, "<title>", " | Simply Recipes");
+	        $title = trim(strip_tags(scrape_between($results, "<title>", " | Simply Recipes"),'<p><b><i>'));
 	        // Get the ingredients block
 	        $ingredients_list = scrape_between($results, "<div id=\"recipe-ingredients\"", "<div id=\"recipe-method\"");
 	        $separate_ingredients = explode("<li class=\"ingredient\"", $ingredients_list);
 	        foreach ($separate_ingredients as $separate_ingredient) {
 	        	if ($separate_ingredient !="") {
-	        		$result_ingredients[] = scrape_between($separate_ingredient, "itemprop=\"ingredients\">","</li>");
+	        		$ingredient = trim(strip_tags(scrape_between($separate_ingredient, "itemprop=\"ingredients\">","</li>"),'<p><b><i>'));
+	        		if ($ingredient != "") {
+	        			$result_ingredients[] = $ingredient;
+	        		}
 	        	}
 	        }
 	        // Get the directions
@@ -142,22 +179,28 @@ class recipes_controller extends base_controller {
 	        $separate_directions = explode("<p>", $directions_list);
 	        foreach ($separate_directions as $separate_direction) {
 	        	if ($separate_direction !="") {
-	        		$result_directions[] = scrape_between($separate_direction, "</strong>", "</p>");
+	        		$direction = trim(strip_tags(scrape_between($separate_direction, "</strong>", "</p>"),'<p><b><i>'));
+	        		if ($direction != "") {
+	        			$result_directions[] = $direction;
+	        		}
 	        	}
 	        }
 	    }
 
 	    else if (stripos($_POST['url'], 'verybestbaking') !== false) {
 	        // Very Best baking
-	        $results = Utils::curl('http://www.verybestbaking.com/recipes/138504/Puerto-Rican-Coconut-Dessert/detail.aspx');
+	        $results = Utils::curl($_POST['url']);
 	        // Get the title
-	        $title = scrape_between($results, "<title>", "</title>");
+	        $title = trim(strip_tags(scrape_between($results, "<title>", "</title>"),'<p><b><i>'));
 	        // Get the ingredients block
 	        $ingredients_list = scrape_between($results, "<div class=\"userIngredients\">", "</div>");
 	        $separate_ingredients = explode("<li", $ingredients_list);
 	        foreach ($separate_ingredients as $separate_ingredient) {
 	        	if ($separate_ingredient !="") {
-	        		$result_ingredients[] = scrape_between($separate_ingredient, "class=\"ingredient\">","</li>");
+	        		$ingredient = trim(strip_tags(scrape_between($separate_ingredient, "class=\"ingredient\">","</li>"),'<p><b><i>'));
+	        		if ($ingredient != "") {
+	        			$result_ingredients[] = $ingredient;
+	        		}
 	        	}
 	        }
 	        // Get the directions
@@ -165,8 +208,10 @@ class recipes_controller extends base_controller {
 	        $separate_directions = explode("<div class=", $directions_list);
 	        foreach ($separate_directions as $separate_direction) {
 	        	if ($separate_direction !="") {
-	        		$result_directions = scrape_between($separate_direction, "\"instructions\">", "</div>");
-	        		#echo $result_directions;
+	        		$direction = trim(strip_tags(scrape_between($separate_direction, "\"instructions\">", "</div>"),'<p><b><i>'));
+	        		if ($direction != "") {
+	        			$result_directions[] = $direction;
+	        		}
 	        	}
 	        }
 	    }
@@ -175,20 +220,63 @@ class recipes_controller extends base_controller {
 	    	echo "We do not support extracting recipes from that site.";
 	    }
 
-	    $data = Array(
-	    'title' => $title, 
-	    'ingredients_list' => implode(",",$result_ingredients), 
-	    'directions_list' =>  implode(",",$result_directions),
-	    'url' => $_POST['url']);
+	    if (isset($image) == FALSE) {
+	    	$image = "";
+	    }
 
-        # Insert data
-        # Note we didn't have to sanitize any of the $_POST data because we're using the insert method which does it for us
-        DB::instance(DB_NAME)->insert('recipes', $data);
-        
-    	# Send them back to the original page where they can see all their posts.
-        Router::redirect("/recipes/add_recipes");
+
+	    if (isset($title, $result_ingredients, $result_directions) == FALSE) {
+	    	echo "Unfortunately this does not appear to be a recipe.";
+	    }
+	    else {
+		    $data = Array(
+		    'title' => $title, 
+		    'image_url' => $image,
+		    'ingredients_list' => implode("<br>",$result_ingredients), 
+		    'directions_list' =>  implode("<br>",$result_directions),
+		    'created' => $_POST['created'],
+		    'added_by' => $_POST['added_by'],
+		    'url' => $_POST['url']);
+
+	        # Insert data
+	        # Note we didn't have to sanitize any of the $_POST data because we're using the insert method which does it for us
+	        DB::instance(DB_NAME)->insert('recipes', $data);
+	        echo "Your post was added.";
+	    	
+	    }
 
     }
+
+    public function recipe($url_id = NULL) {
+
+        # Users cannot try to access this page unless logged in. They're sent to home if they do.
+        if(!$this->user) {
+            Router::redirect('/');
+        }
+
+        $this->template->content = View::instance('v_recipe_page');
+        $this->template->title = "Recipe Page";
+
+        $q = "SELECT title, 
+                    ingredients_list,
+                    directions_list,
+                    added_by,
+                    image_url,
+                    url
+                FROM recipes
+                WHERE url_id = '".$url_id."'";
+        
+
+        $recipe = DB::instance(DB_NAME)->select_rows($q);
+        
+        # Pass the data to the view
+        $this->template->content->recipe = $recipe;    
+
+        echo $this->template;
+
+        
+    }
+
 
 
 

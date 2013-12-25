@@ -12,8 +12,10 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />	
 						
 		<!-- Common CSS/JSS -->
-		<link rel="stylesheet" type="text/css" href="/css/style.css" media="screen">	
-
+		<link rel="stylesheet" type="text/css" href="/css/style.css" media="screen">
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+    	
 		<!-- Controller Specific JS/CSS -->
 		<?php if(isset($client_files_head)) echo $client_files_head; ?>
 		

@@ -18,11 +18,16 @@ h3 {
 
 
 body {
-	background: url('/images/rolls.JPG') no-repeat center center fixed;
-	-webkit-background-size: cover;
-	-moz-background-size: cover;
-	-o-background-size: cover;
-	background-size: cover;
+	
+	background-color: #6d695c;
+	background-image:
+	repeating-linear-gradient(120deg, rgba(255,255,255,.1), rgba(255,255,255,.1) 1px, transparent 1px, transparent 60px),
+	repeating-linear-gradient(60deg, rgba(255,255,255,.1), rgba(255,255,255,.1) 1px, transparent 1px, transparent 60px),
+	linear-gradient(60deg, rgba(0,0,0,.1) 25%, transparent 25%, transparent 75%, rgba(0,0,0,.1) 75%, rgba(0,0,0,.1)),
+	linear-gradient(120deg, rgba(0,0,0,.1) 25%, transparent 25%, transparent 75%, rgba(0,0,0,.1) 75%, rgba(0,0,0,.1));
+	background-size: 70px 120px;
+
+	
 	text-align: center;
 
 	font: 100% georgia, sans-serif;
@@ -84,6 +89,10 @@ ul li.active a{
     background: -moz-radial-gradient(center 70px 45deg, circle cover, rgba(31,169,244,1) 0%, rgba(0,28,78, 1) 100%);
 }
 
+#recipelinks {
+	color:#555753;
+}
+
 /*General wrappers for divs*/
 .wrapper {
     width: 783px;
@@ -125,9 +134,9 @@ ul li.active a{
 }
 
 
-/* Post wrapper */
+/* Recipe wrapper */
 
-.post {
+.recipe {
 	width:80%;
 	background:rgba(180,160,136,1);
 	margin: 50px auto;
@@ -151,7 +160,7 @@ ul li.active a{
 }
 
 .small {
-	font-size: 75%;
+	font-size: 80%;
 }
 
 .name {
