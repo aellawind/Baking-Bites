@@ -64,7 +64,10 @@ class recipes_controller extends base_controller {
         	// TASTE OF HOME RECIPES
 	        $results = Utils::curl($_POST['url']);
 	        // Get the recipe title
-	        $title = trim(strip_tags(scrape_between($results, "<title>", " | Taste of Home</title>"),'<p><b><i>')); 
+	        $title = trim(strip_tags(scrape_between($results, "<title>", " | Taste of Home</title>"),'<p><b><i>'));
+	        //Get an image (if it exists)
+	        $imageblock = trim(scrape_between($results, "<div class=\"rd_recipe_img\">", "</div>"));
+	        $image = trim(scrape_between($imageblock, "src=\"", "\"")); 
 	        // Get the ingredients block
 	        $ingredients_list = scrape_between($results, "<ul class=\"rd_ingredients\">", "</ul>");
 	        // Put each ingredient into an array
@@ -245,7 +248,7 @@ class recipes_controller extends base_controller {
 	        # Insert data
 	        # Note we didn't have to sanitize any of the $_POST data because we're using the insert method which does it for us
 	        DB::instance(DB_NAME)->insert('recipes', $data);
-	        echo "Your post was added.";
+	        echo "Your recipe was added.";
 	    	
 	    }
 

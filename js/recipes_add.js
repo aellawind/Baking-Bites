@@ -8,7 +8,7 @@ var options = {
 	success: function(response) {
 
 		if (response=="Your recipe was added.") {
-			$("#recipeform")[0].reset();
+			$("#linkform")[0].reset();
 			$('#reciperesults').html(response);
 			$('#reciperesults').css('color', '#A52A2A');
 		}
