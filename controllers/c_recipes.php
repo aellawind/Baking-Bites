@@ -107,7 +107,7 @@ class recipes_controller extends base_controller {
 	        $imageblock = trim(scrape_between($results, "<img id=\"imgPhoto\" class=\"rec-image", "/>"));
 	        $image = trim(scrape_between($imageblock, "src=\"", "\"")); 
 	        // Get the ingredients block
-	        $ingredients_list = scrape_between($results, "<ul class=\"ingredient-wrap\">", "</ul>");
+	        $ingredients_list = scrape_between($results, "<ul class=\"ingredient-wrap\">", "<div id=\"msgAddIngredients\">");
 	        $separate_ingredients = explode("itemprop=\"ingredients\"", $ingredients_list);
 	        foreach ($separate_ingredients as $separate_ingredient) {
 	        	if ($separate_ingredient !="") {
@@ -280,6 +280,13 @@ class recipes_controller extends base_controller {
         $this->template->content = View::instance('v_recipe_page');
         $this->template->title = "Recipe Page";
 
+        # Putting in a random number that doesn't lead to a recipe will show this error message
+        $recipeexists = DB::instance(DB_NAME)->select_field("SELECT title FROM recipes WHERE recipe_id = '".$recipe_id."'");
+        echo "THIS", $recipeexists;
+        if (trim($recipeexists) == "") {
+        	$this->template->content->error = "True";
+        }
+       
         $q = "SELECT title, 
                     ingredients_list,
                     directions_list,

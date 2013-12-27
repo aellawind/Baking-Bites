@@ -1,5 +1,10 @@
 <div class="recipe">
 
+	<?php if($error): ?>
+		<p class = "margined">Sorry, the recipe you are looking for does not exist.</p>
+	<?php endif;?>
+
+
 	<?php foreach($recipe as $rec): ?>
 
 		<!-- If user has already added this to their favorites, they can see the 'remove button'-->
