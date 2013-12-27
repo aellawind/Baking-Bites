@@ -278,7 +278,7 @@ class users_controller extends base_controller {
 
         $profile = DB::instance(DB_NAME)->select_rows($q);
 
-        $user_id = array_values($profile)[0]['user_id'];
+        $user_id = DB::instance(DB_NAME)->select_field("SELECT user_id FROM users WHERE users.username = '".$username."'");
 
         $source = "<a href=\"/users/profile/".$username."\">".$username."</a>";
 
