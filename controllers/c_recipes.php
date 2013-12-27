@@ -62,6 +62,7 @@ class recipes_controller extends base_controller {
 		}
 		else if (stripos($_POST['url'], 'tasteofhome') !== false) {
         	// TASTE OF HOME RECIPES
+        	$source = "<a href=\"tasteofhome.com\">Taste of Home</a>";
 	        $results = Utils::curl($_POST['url']);
 	        // Get the recipe title
 	        $title = trim(strip_tags(scrape_between($results, "<title>", " | Taste of Home</title>"),'<p><b><i>'));
@@ -98,9 +99,13 @@ class recipes_controller extends base_controller {
         else if (stripos($_POST['url'], 'allrecipes') !== false) {
        
 	        //ALLRECIPES 
+	        $source = "<a href=\"allrecipes.com\">Allrecipes</a>";
 	        $results = Utils::curl($_POST['url']);
 	        // Get the title
 	        $title = trim(strip_tags(scrape_between($results, "<title>", "- Allrecipes.com"),'<p><b><i>'));
+	        //Get an image (if it exists)
+	        $imageblock = trim(scrape_between($results, "<img id=\"imgPhoto\" class=\"rec-image", "/>"));
+	        $image = trim(scrape_between($imageblock, "src=\"", "\"")); 
 	        // Get the ingredients block
 	        $ingredients_list = scrape_between($results, "<ul class=\"ingredient-wrap\">", "</ul>");
 	        $separate_ingredients = explode("itemprop=\"ingredients\"", $ingredients_list);
@@ -130,6 +135,7 @@ class recipes_controller extends base_controller {
         else if (stripos($_POST['url'], 'epicurious') !== false) {
        
 	        //EPICURIOUS
+	        $source = "<a href=\"epicurious.com\">Epicurious</a>";
 	        $results = Utils::curl($_POST['url']);
 	        // Get the title
 	        $title = trim(strip_tags(scrape_between($results, "<title>", " | Epicurious.com"),'<p><b><i>'));
@@ -167,11 +173,15 @@ class recipes_controller extends base_controller {
         else if (stripos($_POST['url'], 'simplyrecipes') !== false) {
 
 	        // Simply Recipes
+	        $source = "<a href=\"simplyrecipes.com\">SimplyRecipes</a>";
 	        $results = Utils::curl($_POST['url']);
 	        // Get the title
 	        $title = trim(strip_tags(scrape_between($results, "<title>", " | Simply Recipes"),'<p><b><i>'));
 	        // Get the ingredients block
-	        $ingredients_list = scrape_between($results, "<div id=\"recipe-ingredients\"", "<div id=\"recipe-method\"");
+	        //Get an image (if it exists)
+	        $imageblock = trim(scrape_between($results, "<div class=\"featured-image\">", "</div>"));
+	        $image = trim(scrape_between($imageblock, "src=\"", "\""));
+			$ingredients_list = scrape_between($results, "<div id=\"recipe-ingredients\"", "<div id=\"recipe-method\"");
 	        $separate_ingredients = explode("<li class=\"ingredient\"", $ingredients_list);
 	        foreach ($separate_ingredients as $separate_ingredient) {
 	        	if ($separate_ingredient !="") {
@@ -196,10 +206,14 @@ class recipes_controller extends base_controller {
 
 	    else if (stripos($_POST['url'], 'verybestbaking') !== false) {
 	        // Very Best baking
+	        $source = "<a href=\"verybestbaking.com\">VeryBestBaking</a>";
 	        $results = Utils::curl($_POST['url']);
 	        // Get the title
 	        $title = trim(strip_tags(scrape_between($results, "<title>", "</title>"),'<p><b><i>'));
-	        // Get the ingredients block
+	        //Get an image (if it exists)
+	        $imageblock = trim(scrape_between($results, "<div class=\"column recipePhoto\">", "</div>"));
+	        $image = trim(scrape_between($imageblock, "src=\"", "\""));
+			// Get the ingredients block
 	        $ingredients_list = scrape_between($results, "<div class=\"userIngredients\">", "</div>");
 	        $separate_ingredients = explode("<li", $ingredients_list);
 	        foreach ($separate_ingredients as $separate_ingredient) {
@@ -243,12 +257,14 @@ class recipes_controller extends base_controller {
 		    'directions_list' =>  implode("<br>",$result_directions),
 		    'created' => $_POST['created'],
 		    'added_by' => $_POST['added_by'],
+		    'source' => $source,
 		    'url' => $_POST['url']);
 
 	        # Insert data
 	        # Note we didn't have to sanitize any of the $_POST data because we're using the insert method which does it for us
-	        DB::instance(DB_NAME)->insert('recipes', $data);
-	        echo "Your recipe was added.";
+	        $recipe_id = DB::instance(DB_NAME)->insert('recipes', $data);
+	        $link = "/recipes/recipe/".$recipe_id;
+	        echo "Your recipe was added. Click <a href=$link target=\"_blank\">here</a> to view it, or add another recipe!";
 	    	
 	    }
 
@@ -336,40 +352,152 @@ class recipes_controller extends base_controller {
 		    'ingredients_list' => $_POST['ingredients_list'], 
 		    'directions_list' =>  $_POST['directions_list'],
 		    'created' => $_POST['created'],
-		    'added_by' => $_POST['added_by']);
+		    'added_by' => $_POST['added_by'],
+		    'source' => $_POST['added_by']);
 
 	    # Insert data
         # Note we didn't have to sanitize any of the $_POST data because we're using the insert method which does it for us
-        $recipe_id = DB::instance(DB_NAME)->insert('recipes', $data);
 
         if($_FILES) {
 	        
 	        if($_FILES['recipeimages']['error'] ==0) {
+		         $recipe_id = DB::instance(DB_NAME)->insert('recipes', $data);
 		        // Image upload
-		        echo "There's an image";
 		        Upload::upload($_FILES, "/uploads/recipeimages/", array("JPG", "JPEG", "jpg", "gif", "GIF", "png", "PNG"), $recipe_id);
-
 		        $filename = $_FILES['recipeimages']['name'];
 		        $extension = substr($filename, strrpos($filename, '.'));
 		        $recipeimages = "/uploads/recipeimages/".$recipe_id.$extension;
 		        $img = Array('recipeimages' => $recipeimages);
 		        DB::instance(DB_NAME)->update("recipes", $img, "WHERE recipe_id = '".$recipe_id."'");
+		        $link = "/recipes/recipe/".$recipe_id;
+	        	echo "Your recipe was added. Click <a href=$link target=\"_blank\">here</a> to view it, or add another recipe!";
 	        }
 
-	        else if($_FILES['recipeimages']['error']==2) {
-	        	echo "Your image exceeds the max file size limit.";
+	        else {
+	        	echo "There was a problem with your upload. Try again.";
 	        }
 
 
 	    }
 
 	    else {
-	    	echo "Your recipe was added.";
+	    	$recipe_id = DB::instance(DB_NAME)->insert('recipes', $data);
+	        $link = "/recipes/recipe/".$recipe_id;
+	        echo "Your recipe was added. Click <a href=$link target=\"_blank\">here</a> to view it, or add another recipe!";
 	    }
 
     }
 
+	public function search() {
 
+		# Setup view
+        $this->template->content = View::instance('v_recipes_search');
+        $this->template->title   = "Search For A Recipe";
+        
+        # Load JS files
+        $client_files_body = Array(
+        	"/js/jquery.form.min.js",
+        	"/js/own_recipe_add.js",
+        	"/js/search.js"
+        );
+
+        $this->template->client_files_body = Utils::load_client_files($client_files_body);
+        # Render template
+        echo $this->template;
+
+	}
+
+	public function p_search() {
+
+        # Load JS files
+        $client_files_body = Array(
+        	"/js/jquery.form.min.js",
+        	"/js/own_recipe_add.js",
+        	"/js/search.js"
+        );
+
+        $this->template->client_files_body = Utils::load_client_files($client_files_body);
+        
+        if($_POST['ingredient1'] == "" && $_POST['ingredient2'] =="" && $_POST['ingredient3'] =="" 
+        	&& $_POST['ingredient4'] =="" && $_POST['ingredient5'] =="") {
+        	echo "Please enter at least one ingredient.";
+        	return;
+        }
+
+        $firstsearchterm = $_POST['ingredient1'];
+        $recipeq = "SELECT *
+        	FROM recipes
+        	WHERE ingredients_list
+        	LIKE '%$firstsearchterm%'";
+
+        if ($_POST['ingredient2'] != "") {
+
+
+        	$secondsearchterm = $_POST['ingredient2'];
+        	$recipeq = "SELECT *
+        				FROM recipes
+        				WHERE ingredients_list LIKE '%$firstsearchterm%' 
+        				AND ingredients_list LIKE '%$secondsearchterm%'";
+
+        	if ($_POST['ingredient3']) {
+
+	        	$thirdsearchterm = $_POST['ingredient3'];
+	        	$recipeq = "SELECT *
+	        				FROM recipes
+	        				WHERE ingredients_list LIKE '%$firstsearchterm%'
+	        				AND ingredients_list LIKE '%$secondsearchterm%'
+	        				AND ingredients_list LIKE '%$thirdsearchterm%'";
+
+	        	if ($_POST['ingredient4']) {
+
+		        	$fourthsearchterm = $_POST['ingredient4'];
+		        	$recipeq = "SELECT *
+		        				FROM recipes
+		        				WHERE ingredients_list LIKE '%$firstsearchterm%'
+		        				AND ingredients_list LIKE '%$secondsearchterm%'
+		        				AND ingredients_list LIKE '%$thirdsearchterm%'
+		        				AND ingredients_list LIKE '%$fourthsearchterm%'";
+		        				
+		        	if ($_POST['ingredient5']) {
+
+			        	$fifthsearchterm = $_POST['ingredient5'];
+			        	$recipeq = "SELECT *
+			        				FROM recipes
+			        				WHERE ingredients_list LIKE '%$firstsearchterm%'
+			        				AND ingredients_list LIKE '%$secondsearchterm%'
+			        				AND ingredients_list LIKE '%$thirdsearchterm%'
+			        				AND ingredients_list LIKE '%$fourthsearchterm%'
+			        				AND ingredients_list LIKE '%$fifthsearchterm%'";
+	        		}
+		        }
+        	}
+        }
+
+
+        $results =DB::instance(DB_NAME)->select_rows($recipeq);
+        $results_array = Array();
+        
+        foreach ($results as $res) {
+        	$image = "";
+        	if ($res['image_url'] !== "") {
+        		$image = "<img src=\"".$res['image_url']."\" class=\"small_recipe_image\"/>";
+        	}
+            else if ($res['recipeimages'])  {
+            	$image = "<img src=\"".$res['recipeimages']."\" class=\"small_recipe_image\"/>";
+            }
+        	$title = $res['title'];
+        	$link = "/recipes/recipe/".$res['recipe_id'];
+        	$source = $res['source'];
+        	$results_array[] = $image."<a href=".$link.">".$title."</a><br><br>";
+        }
+
+        #echo json_encode($results_array);
+        foreach ($results_array as $result) {
+        	echo $result;
+        }
+
+
+	}
 
 
 

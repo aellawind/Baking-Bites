@@ -7,7 +7,7 @@ var options = {
 	},
 	success: function(response) {
 
-		if (response=="Your recipe was added.") {
+		if (response.indexOf("Your recipe was added" > -1)) {
 			$("#linkform")[0].reset();
 			$('#reciperesults').html(response);
 			$('#reciperesults').css('color', '#A52A2A');
