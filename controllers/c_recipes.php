@@ -485,10 +485,16 @@ class recipes_controller extends base_controller {
             else if ($res['recipeimages'])  {
             	$image = "<img src=\"".$res['recipeimages']."\" class=\"small_recipe_image\"/>";
             }
+            else {
+            	$image = "<img src=\"/images/recipedefault.png\"/>";
+            }
         	$title = $res['title'];
         	$link = "/recipes/recipe/".$res['recipe_id'];
         	$source = $res['source'];
-        	$results_array[] = $image."<a href=".$link.">".$title."</a><br><br>";
+        	$ingredients = $res['ingredients_list'];
+        	$div1 = "<div class=\"left\">".$image."</div>";
+        	$div2 = "<div class=\"right\"><span class=\"recipetitle\"><a href=".$link.">".$title."</a></span><br><span class=\"from\">From: ".$source."</span><br>".$ingredients."</div>";
+        	$results_array[] = "<div class=\"oneresult\"><br>".$div1.$div2."<div class=\"clear\"><br></div></div>";
         }
 
         #echo json_encode($results_array);

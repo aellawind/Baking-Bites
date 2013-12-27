@@ -8,10 +8,15 @@ var options = {
 	success: function(response) {
 
 		if (response) {
-			//var data  =$.parseJSON(response)
-			$("#searchform")[0].reset();
-			$('#searchresults').html(response);
-			$('#searchresults').css('color', '#A52A2A');
+			if (response.indexOf("Please enter" > -1)) {
+				$('#searchresults').html(response);
+				$('#searchresults').css('color', '#A52A2A');
+			}
+			else {
+				//var data  =$.parseJSON(response)
+				$('#searchresults').html(response);
+			}
+
 		}
 		else {
 			$('#searchresults').html("Sorry, there are no relevant search results. Try again with less keywords.");

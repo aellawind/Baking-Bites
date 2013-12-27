@@ -15,3 +15,4 @@ to find the best recipe for you!</h2></div>
 </form>
 <br>
 <div id="searchresults"></div>
+<br>

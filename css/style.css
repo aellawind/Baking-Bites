@@ -97,10 +97,24 @@ ul li.active a{
     background: -moz-radial-gradient(center 70px 45deg, circle cover, rgba(31,169,244,1) 0%, rgba(0,28,78, 1) 100%);
 }
 
+/* Recipe related */
+
 #recipelinks {
 	color:#555753;
 }
 
+.recipetitle a {
+	font: normal 1.4em georgia, sans-serif; 
+	margin-bottom: 0; 
+	color: #323025;
+	text-decoration:bold;
+}
+
+.from, .from a {
+	font: normal .9em georgia, sans-serif;
+	color: #323025;
+	text-decoration:none;
+}
 /*General wrappers for divs*/
 .wrapper {
     width: 783px;
@@ -144,7 +158,7 @@ ul li.active a{
 
 /* Recipe wrapper and profile wrapper */
 
-.recipe, .profile {
+.recipe, .profile, {
 	width:80%;
 	background:rgba(180,160,136,1);
 	margin: 50px auto;
@@ -158,6 +172,38 @@ ul li.active a{
 	word-wrap: break-word;
 
 }
+
+.oneresult {
+	width:80%;
+	background:rgba(180,160,136,1);
+	margin: 50px auto;
+	-moz-border-radius: 15px;
+	border-radius: 15px;
+	border-style:solid;
+	border-width:2px;
+	border-color:rgba(171,148,120,1);
+	padding:5px 15px 5px 15px;
+	word-wrap: break-word;
+}
+
+.left {
+	float:left;
+	width:305px;
+	height:295px;
+	position:relative;
+}
+
+.right {
+	float:right;
+	width:305px;
+	height:295px;
+	position:relative;
+	overflow: hidden; 
+	text-align:left;        
+	text-color: ##555753;
+}
+
+.clear { clear: both;}
 
 /* Create a prettier submission field. */
 
@@ -178,7 +224,7 @@ ul li.active a{
 
 .small_recipe_image {
 	max-width:300px;
-	height:auto;
+	overflow:hidden;
 }
 
 /* Miscellaneous CSS elements to format smaller things */
