@@ -263,7 +263,7 @@ class users_controller extends base_controller {
             $this->template->content->username = $username;
         }   
         
-
+        #Basic profile information
         $q = "SELECT first_name, 
                     last_name, 
                     bakedgood,
@@ -278,17 +278,28 @@ class users_controller extends base_controller {
 
         $profile = DB::instance(DB_NAME)->select_rows($q);
 
-        $fav = array_values($profile)[0]['user_id'];
+        $user_id = array_values($profile)[0]['user_id'];
+
+        $source = "<a href=\"/users/profile/".$username."\">".$username."</a>";
+
+        #Recipes the user added
+        $qaddedrecipes = "SELECT * 
+                    FROM recipes
+                    WHERE source = '".$source."'"; 
+
+        $addedrecipes = DB::instance(DB_NAME)->select_rows($qaddedrecipes);
         
+        #Recipes the user favorited
         $qfavorites = "SELECT *
                 FROM favorites
-                WHERE user_id = ".$fav;
+                WHERE user_id = ".$user_id;
 
         $recipefavorites = DB::instance(DB_NAME)->select_rows($qfavorites);
         
         # Pass the data to the view
         $this->template->content->profile = $profile;    
         $this->template->content->recipefavorites = $recipefavorites;
+        $this->template->content->addedrecipes = $addedrecipes;
 
         echo $this->template;
 

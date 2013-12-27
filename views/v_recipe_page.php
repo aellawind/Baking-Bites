@@ -8,8 +8,10 @@
 
 		<?php else: ?>
 			<a href="/recipes/addfavorites/<?=$rec['recipe_id']?>" class="favoriterecipe">Add To Favorites</a>
-		 <?php endif; ?>
+		<?php endif; ?>
 
+
+		<!-- Basic information for the recipe -->
 		<h1><?=$rec['title']?></h1>
 
 		<?php if($rec['image_url'] != ""): ?>
@@ -24,6 +26,11 @@
 		<p><b>Added by: </b><?=$rec['source']?></p>
 		<?php if($rec['url']): ?>
 			<p class="small">Taken from <a href='<?=$rec['url']?>' id="recipelinks"><?=$rec['url']?></a></p>
+		<?php endif;?>
+
+		<!-- If the user added this recipe, they can delete it-->
+		<?php if($thisuserrecipe == "True"): ?>
+			<a href="/recipes/remove_your_own/<?=$rec['recipe_id']?>" class="removelinks">Remove Your Recipe</a>
 		<?php endif;?>
 
 

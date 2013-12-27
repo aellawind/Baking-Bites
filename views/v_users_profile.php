@@ -19,6 +19,11 @@
 		<p><b>Favorite Type of Cookies: </b><?=$prof['cookie']?></p>
 		<p><b>Your Baking Advice Catchphrase: </b><?=$prof['bakingadvice']?></p>
 		<p><b>Mini Bio: </b><?=$prof['bio']?></p>
+		<p><b>Added Recipes:</b><br>
+		<?php foreach($addedrecipes as $added): ?>
+			<a href='/recipes/recipe/<?=$added['recipe_id']?>' id="recipelinks"><?=$added['title']?></a>
+			<br>
+		<?php endforeach; ?>
 		<p><b>Favorite Recipes: </b><br>
 		<?php foreach($recipefavorites as $favorite): ?>
 			<a href='/recipes/recipe/<?=$favorite['recipe_id_favorited']?>' id="recipelinks"><?=$favorite['title']?></a>

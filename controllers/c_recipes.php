@@ -297,17 +297,34 @@ class recipes_controller extends base_controller {
 
         # Build the query to figure out what connections/favorites the user already has
    		# I.e. the recipes they've favorited already
-    	$q = "SELECT * 
-        	FROM favorites
-        	WHERE user_id = ".$this->user->user_id;
+    	$qfaves = "SELECT * 
+	        	FROM favorites
+	        	WHERE user_id = ".$this->user->user_id;
 
     	# Execute this query with the select_array method
     	# select_array will return our results in an array and use the "users_id_followed" field as the index.
-    	$connections = DB::instance(DB_NAME)->select_array($q, 'recipe_id_favorited');
-        
+    	$connections = DB::instance(DB_NAME)->select_array($qfaves, 'recipe_id_favorited');
+
+    	#Decide if user is the one who uploaded this recipe
+    	$username = $this->user->username;
+    	$user_source = "<a href=\"/users/profile/".$username."\">".$username."</a>";
+
+    	$qupload = "SELECT source 
+		    		FROM recipes
+		    		WHERE recipe_id = '".$recipe_id."'";
+
+    	$sources = DB::instance(DB_NAME)->select_rows($qupload);
+    	$source = array_values($sources)[0]['source'];
+
+    	$thisuserrecipe = "False";
+    	if($user_source == $source) {
+    		$thisuserrecipe = "True";
+    	}
+    	
         # Pass the data to the view
         $this->template->content->recipe = $recipe; 
-        $this->template->content->connections = $connections;  
+        $this->template->content->connections = $connections; 
+        $this->template->content->thisuserrecipe = $thisuserrecipe; 
 
         echo $this->template;
 
@@ -398,6 +415,46 @@ class recipes_controller extends base_controller {
 	        $link = "/recipes/recipe/".$recipe_id;
 	        echo "Your recipe was added. Click <a href=$link target=\"_blank\">here</a> to view it, or add another recipe!";
 	    }
+
+    }
+
+    #The below function shows the page where the user is asked if they really want to delete their recipe.
+    public function remove_your_own($recipe_id) {
+    	
+    	#Protect against others trying to delete a recipe
+    	$user_id = $this->user->user_id;
+
+    	$q = "SELECT user_id 
+    		FROM recipes
+    		WHERE recipe_id = '".$recipe_id."'";
+
+    	$ids = DB::instance(DB_NAME)->select_rows($q);
+    	$id = array_values($ids)[0]['user_id'];
+
+    	if($id != $user_id) {
+    		Router::redirect('/');
+    	}
+
+    	else {
+    		$this->template->content = View::instance('v_recipe_delete');
+    		$this->template->title= "Delete Recipe Confirmation";
+    		$this->template->content->recipe_id = $recipe_id;
+    		echo $this->template;
+
+    	}
+
+    }
+
+    public function p_remove_your_own($recipe_id) {
+
+    	#delete from recipes
+		$recipe_location = 'WHERE recipe_id= '.$recipe_id;
+		DB::instance(DB_NAME)->delete('recipes', $recipe_location);
+
+		#delete from people's favorites
+		$fav_recipe_location = 'WHERE recipe_id_favorited = '.$recipe_id;
+		DB::instance(DB_NAME)->delete('favorites', $fav_recipe_location); 	   		
+		Router::redirect("/recipes/add_recipes");
 
     }
 

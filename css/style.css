@@ -103,6 +103,10 @@ ul li.active a{
 	color:#555753;
 }
 
+.removelinks {
+	color:#8B4513;
+}
+
 .recipetitle a {
 	font: normal 1.4em georgia, sans-serif; 
 	margin-bottom: 0; 
