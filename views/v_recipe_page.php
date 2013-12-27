@@ -2,6 +2,14 @@
 
 	<?php foreach($recipe as $rec): ?>
 
+		<!-- If user has already added this to their favorites, they can see the 'remove button'-->
+		<?php if(isset($connections[$rec['recipe_id']])): ?>
+			<a href="/recipes/removefavorites/<?=$rec['recipe_id']?>" class="favoriterecipe">Remove Favorite</a>
+
+		<?php else: ?>
+			<a href="/recipes/addfavorites/<?=$rec['recipe_id']?>" class="favoriterecipe">Add To Favorites</a>
+		 <?php endif; ?>
+
 		<h1><?=$rec['title']?></h1>
 
 		<?php if($rec['image_url'] != ""): ?>
@@ -13,7 +21,7 @@
 
 		<p><b>Ingredients: </b><br><?=$rec['ingredients_list']?></p>
 		<p><b>Directions: <br></b><?=$rec['directions_list']?></p>
-		<p><b>Added by: </b><?=$rec['added_by']?></p>
+		<p><b>Added by: </b><?=$rec['source']?></p>
 		<?php if($rec['url']): ?>
 			<p class="small">Taken from <a href='<?=$rec['url']?>' id="recipelinks"><?=$rec['url']?></a></p>
 		<?php endif;?>

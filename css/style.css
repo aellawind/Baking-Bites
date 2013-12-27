@@ -158,7 +158,7 @@ ul li.active a{
 
 /* Recipe wrapper and profile wrapper */
 
-.recipe, .profile, {
+.recipe, .profile {
 	width:80%;
 	background:rgba(180,160,136,1);
 	margin: 50px auto;
@@ -229,6 +229,10 @@ ul li.active a{
 
 /* Miscellaneous CSS elements to format smaller things */
 
+.error {
+	color:red;
+}
+
 .margined {
 	margin-left:15px;
 	margin-right:15px;
@@ -258,7 +262,7 @@ ul li.active a{
 	color:#4b3f2f;
 }
 
-.follow {
+.faverecipe {
 	width:85%;
 	background:#B39D9A;
 	margin: auto;
@@ -322,8 +326,8 @@ a.userlink:hover {
 	filter : progid:DXImageTransform.Microsoft.gradient( startColorstr='#a8a8a8', endColorstr='#454346',GradientType=0 );
 }
 
-/* The following code prettifies the follow and unfollow buttons.*/
-.follow_button {
+/* The following code prettifies the add favorite recipe buttons.*/
+.favoriterecipe {
 	-moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
 	-webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
 	box-shadow:inset 0px 1px 0px 0px #ffffff;
@@ -348,12 +352,12 @@ a.userlink:hover {
 	display:inline-block;
 	color:#777777;
 	font-family:Arial;
-	font-size:15px;
+	font-size:10px;
 	font-weight:bold;
 	font-style:normal;
-	height:27px;
-	line-height:27px;
-	width:112px;
+	height:17px;
+	line-height:17px;
+	width:125px;
 	text-decoration:none;
 	text-align:center;
 	text-shadow:1px 1px 0px #ffffff;
@@ -462,93 +466,6 @@ a.userlink:hover {
 	top:1px;
 }
 
-/* Delete Post Button */
-.deletepost {
-	-moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
-	-webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
-	box-shadow:inset 0px 1px 0px 0px #ffffff;
-	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf) );
-	background:-moz-linear-gradient( center top, #ededed 5%, #dfdfdf 100% );
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#dfdfdf');
-	background-color:#ededed;
-	-webkit-border-top-left-radius:0px;
-	-moz-border-radius-topleft:0px;
-	border-top-left-radius:0px;
-	-webkit-border-top-right-radius:0px;
-	-moz-border-radius-topright:0px;
-	border-top-right-radius:0px;
-	-webkit-border-bottom-right-radius:0px;
-	-moz-border-radius-bottomright:0px;
-	border-bottom-right-radius:0px;
-	-webkit-border-bottom-left-radius:0px;
-	-moz-border-radius-bottomleft:0px;
-	border-bottom-left-radius:0px;
-	text-indent:0;
-	border:1px solid #dcdcdc;
-	display:inline-block;
-	color:#777777;
-	font-family:Georgia;
-	font-size:11px;
-	font-weight:bold;
-	font-style:normal;
-	height:24px;
-	line-height:24px;
-	width:85px;
-	text-decoration:none;
-	text-align:center;
-	text-shadow:1px 1px 18px #ffffff;
-	float:right;
-	margin-top:5px;
-
-}
-
-.deletepost:hover {
-	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #dfdfdf), color-stop(1, #ededed) );
-	background:-moz-linear-gradient( center top, #dfdfdf 5%, #ededed 100% );
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#dfdfdf', endColorstr='#ededed');
-	background-color:#dfdfdf;
-}.deletepost:active {
-	position:relative;
-	top:1px;
-}
-
-/* Delete Confirmation Button */
-.deleteconfirm {
-	-moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
-	-webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
-	box-shadow:inset 0px 1px 0px 0px #ffffff;
-	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf) );
-	background:-moz-linear-gradient( center top, #ededed 5%, #dfdfdf 100% );
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#ededed', endColorstr='#dfdfdf');
-	background-color:#ededed;
-	-webkit-border-top-left-radius:0px;
-	-moz-border-radius-topleft:0px;
-	border-top-left-radius:0px;
-	-webkit-border-top-right-radius:0px;
-	-moz-border-radius-topright:0px;
-	border-top-right-radius:0px;
-	-webkit-border-bottom-right-radius:0px;
-	-moz-border-radius-bottomright:0px;
-	border-bottom-right-radius:0px;
-	-webkit-border-bottom-left-radius:0px;
-	-moz-border-radius-bottomleft:0px;
-	border-bottom-left-radius:0px;
-	text-indent:0;
-	border:1px solid #dcdcdc;
-	display:inline-block;
-	color:#777777;
-	font-family:Georgia;
-	font-size:11px;
-	font-weight:bold;
-	font-style:normal;
-	height:24px;
-	line-height:24px;
-	width:85px;
-	text-decoration:none;
-	text-align:center;
-	text-shadow:1px 1px 18px #ffffff;
-
-}
 
 .deletepost:hover {
 	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #dfdfdf), color-stop(1, #ededed) );

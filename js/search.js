@@ -8,13 +8,14 @@ var options = {
 	success: function(response) {
 
 		if (response) {
-			if (response.indexOf("Please enter" > -1)) {
+			if (response.indexOf("Please enter at least one ingredient.") > -1) {
 				$('#searchresults').html(response);
 				$('#searchresults').css('color', '#A52A2A');
 			}
 			else {
-				//var data  =$.parseJSON(response)
+				$('#searchresults').css('color', '#555753');
 				$('#searchresults').html(response);
+				$('html, body').animate({ scrollTop: 850 }, 0);
 			}
 
 		}

@@ -286,15 +286,28 @@ class recipes_controller extends base_controller {
                     added_by,
                     image_url,
                     url,
-                    recipeimages
+                    recipeimages,
+                    source,
+                    recipe_id
                 FROM recipes
                 WHERE recipe_id = '".$recipe_id."'";
         
 
         $recipe = DB::instance(DB_NAME)->select_rows($q);
+
+        # Build the query to figure out what connections/favorites the user already has
+   		# I.e. the recipes they've favorited already
+    	$q = "SELECT * 
+        	FROM favorites
+        	WHERE user_id = ".$this->user->user_id;
+
+    	# Execute this query with the select_array method
+    	# select_array will return our results in an array and use the "users_id_followed" field as the index.
+    	$connections = DB::instance(DB_NAME)->select_array($q, 'recipe_id_favorited');
         
         # Pass the data to the view
-        $this->template->content->recipe = $recipe;   
+        $this->template->content->recipe = $recipe; 
+        $this->template->content->connections = $connections;  
 
         echo $this->template;
 
@@ -349,11 +362,11 @@ class recipes_controller extends base_controller {
 
         $data = Array(
 		    'title' => $_POST['title'], 
-		    'ingredients_list' => $_POST['ingredients_list'], 
-		    'directions_list' =>  $_POST['directions_list'],
+		    'ingredients_list' => nl2br($_POST['ingredients_list']), 
+		    'directions_list' =>  nl2br($_POST['directions_list']),
 		    'created' => $_POST['created'],
 		    'added_by' => $_POST['added_by'],
-		    'source' => $_POST['added_by']);
+		    'source' => "<a href=\"/users/profile/".$_POST['added_by']."\">".$_POST['added_by']."</a>");
 
 	    # Insert data
         # Note we didn't have to sanitize any of the $_POST data because we're using the insert method which does it for us
@@ -504,6 +517,66 @@ class recipes_controller extends base_controller {
 
 
 	}
+
+	public function addfavorites($recipe_id) {
+
+		$q = "SELECT title
+			FROM recipes
+			WHERE recipe_id = ".$recipe_id;
+
+		$titles = DB::instance(DB_NAME)->select_rows($q);
+		$title = array_values($titles)[0]['title'];
+
+		#Prepare the data array to be inserted
+		$data = Array(
+			"created" => Time::now(),
+			"user_id" => $this->user->user_id,
+			"recipe_id_favorited" => $recipe_id,
+			"title" => $title
+			);
+
+		#Do the insert
+		DB::instance(DB_NAME)->insert('favorites', $data);
+
+		Router::redirect("/recipes/favorites");
+
+	}
+
+    public function favorites() {
+
+		# Users cannot try to access this page unless logged in. They're sent to home if they do.
+        if(!$this->user) {
+            Router::redirect('/');
+        }
+
+        $this->template->content = View::instance('v_recipes_favorites');
+        $this->template->title = "My Favorites";
+
+        $q = "SELECT *
+                FROM favorites
+                WHERE user_id = ".$this->user->user_id;
+        
+        $favoriterecipes = DB::instance(DB_NAME)->select_rows($q);
+        
+        # Pass the data to the view
+        $this->template->content->favoriterecipes = $favoriterecipes;  
+
+        echo $this->template;
+
+
+    }
+
+    public function removefavorites($recipe_id) {
+
+		# Delete this favorite
+    	$where_condition = 'WHERE recipe_id_favorited = '.$recipe_id.' AND user_id = '.$this->user->user_id;
+    	DB::instance(DB_NAME)->delete('favorites', $where_condition);
+
+		Router::redirect("/recipes/favorites");
+
+	}
+
+	
 
 
 

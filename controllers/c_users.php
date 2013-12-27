@@ -195,12 +195,30 @@ class users_controller extends base_controller {
         # Set up the view
         $this->template->content = View::instance('v_users_editprofile');
         $this->template->title = "Edit Your Profile";
+        $username = $this->user->username;
 
+        # to create placeholders for editing a profile
+        $q = "SELECT first_name, 
+                    last_name, 
+                    bakedgood,
+                    cake,
+                    cookie,
+                    bakingadvice,
+                    bio,
+                    recipes,
+                    username
+                FROM users
+                WHERE users.username = '".$username."'";
+        
+        $profileinfo = DB::instance(DB_NAME)->select_rows($q);
+        
+        # Pass the data to the view
+        $this->template->content->profileinfo = $profileinfo;    
         echo $this->template;
      
     }
 
-    # The below function does nothing but proces the info from editprofile for profile to use.
+    # The below function does nothing but process the info from editprofile for profile to use.
     public function p_profile() {
 
         # Sanitize the data
@@ -253,16 +271,24 @@ class users_controller extends base_controller {
                     cookie,
                     bakingadvice,
                     bio,
-                    recipes,
+                    user_id,
                     username
                 FROM users
                 WHERE users.username = '".$username."'";
-        
 
         $profile = DB::instance(DB_NAME)->select_rows($q);
+
+        $fav = array_values($profile)[0]['user_id'];
+        
+        $qfavorites = "SELECT *
+                FROM favorites
+                WHERE user_id = ".$fav;
+
+        $recipefavorites = DB::instance(DB_NAME)->select_rows($qfavorites);
         
         # Pass the data to the view
         $this->template->content->profile = $profile;    
+        $this->template->content->recipefavorites = $recipefavorites;
 
         echo $this->template;
 

@@ -41,8 +41,9 @@
 			        		<li><a href='/'>Home</a></li>
 			           		<li><a href='/recipes/add_recipes'>Add Recipes</a></li>
 			           		<li><a href='/recipes/search'>Search Recipes</a></li>
+			           		<li><a href='/recipes/favorites'>Favorites</a></li>
 			           		<li><a href='/users/profile'>Profile</a></li>
-				            <li><a href='/posts/users'>follow</a></li>
+				            
 				            
 				            <li><a href='/users/logout'>Logout</a></li>
 
