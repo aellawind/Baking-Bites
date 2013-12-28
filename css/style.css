@@ -99,7 +99,7 @@ ul li.active a{
 
 /* Recipe related */
 
-#recipelinks {
+.recipelinks {
 	color:#555753;
 }
 

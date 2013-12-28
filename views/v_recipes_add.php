@@ -14,11 +14,11 @@ your fellow bakers can find it too!</h2>
 <br>
 <h3>We accept recipes from...</h3>
 <h4>
-<a href="http://allrecipes.com/" id="recipelinks">Allrecipes.com</a><br>
-<a href="http://www.epicurious.com/" id="recipelinks">Epicurious.com</a><br>
-<a href="http://www.simplyrecipes.com/" id="recipelinks">SimplyRecipes.com</a><br>
-<a href="http://www.tasteofhome.com/" id="recipelinks">TasteofHome.com</a><br>
-<a href="http://www.verybestbaking.com/" id="recipelinks">VeryBestBaking.com</a>
+<a href="http://allrecipes.com/" class="recipelinks">Allrecipes.com</a><br>
+<a href="http://www.epicurious.com/" class="recipelinks">Epicurious.com</a><br>
+<a href="http://www.simplyrecipes.com/" class="recipelinks">SimplyRecipes.com</a><br>
+<a href="http://www.tasteofhome.com/" class="recipelinks">TasteofHome.com</a><br>
+<a href="http://www.verybestbaking.com/" class="recipelinks">VeryBestBaking.com</a>
 </h4>
 
 <h5>Or... <a href="/recipes/add_your_own">add your own!</a></h5>

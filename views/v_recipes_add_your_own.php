@@ -9,7 +9,7 @@
 		Title<BR> <input type='text' name='title' class="submissionfield"><br><br>
 		Ingredients<BR> <textarea name='ingredients_list' class="submissionfield bigtextfield"></textarea><br><br>
 		Directions<BR> <textarea name='directions_list' class="submissionfield bigtextfield"></textarea><br><br>
-		Image<BR> <input type='file' name='recipeimages' value='file' id="upload"><br><br>
+		Image<BR> <input type='file' name='recipeimages' value='file'><br><br>
 		
 		<input type='submit' value='Submit Your Recipe' id='submit'>
 

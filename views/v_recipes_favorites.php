@@ -10,7 +10,7 @@
 
 		<div class="faverecipe">
 		<a href="/recipes/removefavorites/<?=$favorite['recipe_id_favorited']?>" class="favoriterecipe">Remove Favorite</a>
-		<a href='/recipes/recipe/<?=$favorite['recipe_id_favorited']?>' id="recipelinks"><?=$favorite['title']?></a>
+		<a href='/recipes/recipe/<?=$favorite['recipe_id_favorited']?>' class="recipelinks"><?=$favorite['title']?></a>
 		</div>
 		<br>
 
