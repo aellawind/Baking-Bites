@@ -208,6 +208,9 @@ class recipes_controller extends base_controller {
 	        foreach ($separate_directions as $separate_direction) {
 	        	if ($separate_direction !="") {
 	        		$direction = trim(strip_tags(scrape_between($separate_direction, "</strong>", "</p>"),'<p><b><i>'));
+	        		if ($direction == "") {
+	        			$direction = trim(strip_tags(scrape_between($separate_direction, "</b>", "</p>"),'<p><b><i>'));
+	        		}
 	        		if ($direction != "") {
 	        			$result_directions[] = $direction;
 	        		}
