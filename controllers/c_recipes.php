@@ -12,57 +12,51 @@ class recipes_controller extends base_controller {
         }
     }
 
-    # This is the page where users can add a post and also see the posts they've already added.
-    public function index() {
-
-    }
-
-    # This is the function where users can add a recipe
+    // This is the function where users can add a recipe
     public function add_recipes() {
 
-        # Setup view
+        // Setup view
         $this->template->content = View::instance('v_recipes_add');
         $this->template->title   = "Add Recipe";
         
-        # Load JS files
+        // Load JS files
         $client_files_body = Array(
         	"/js/jquery.form.min.js",
         	"/js/recipes_add.js"
         );
 
         $this->template->client_files_body = Utils::load_client_files($client_files_body);
-        # Render template
+        // Render template
         echo $this->template;
 
     }
 
 
-
+    // This is the function that works with the input when users try to add a link as a recipe
     public function p_add_recipes() {
     	
     	
     	$_POST = DB::instance(DB_NAME)->sanitize($_POST);
-
 
     	if($_POST['url'] == "") {
     		echo "Please enter a link.";
     		return;
     	}
 
-    	#set up the recipe query
+    	//set up the recipe query
     	$q = "SELECT recipe_id FROM recipes where url = '".$_POST['url']."'";
-    	#query the database for that link
+    	//query the database for that link
     	$url_exists = DB::instance(DB_NAME)->select_field($q);
-    	#check if it exists in the database
+    	//check if it exists in the database
     	if(!empty($url_exists)) {
     		echo "That recipe already exists. Click <a href=\"/recipes/recipe/".$url_exists."\">here</a> to see it.";
     		return;
     	}
 
-    	# Associate this recipe with this user who originally added it
+    	// Associate this recipe with this user who originally added it
         $_POST['added_by']  = $this->user->username;
 
-        # Unix timestamp of when this post was created / modified
+        // Unix timestamp of when this post was created / modified
         $_POST['created']  = Time::now();
 
         function scrape_between($data, $start, $end){
@@ -266,6 +260,7 @@ class recipes_controller extends base_controller {
 	    if (isset($title, $result_ingredients, $result_directions) == FALSE) {
 	    	echo "Unfortunately this does not appear to be a recipe.";
 	    }
+	    // If we have all the data we need to create a recipe, we insert it into the database
 	    else {
 		    $data = Array(
 		    'title' => $title, 
@@ -277,8 +272,8 @@ class recipes_controller extends base_controller {
 		    'source' => $source,
 		    'url' => $_POST['url']);
 
-	        # Insert data
-	        # Note we didn't have to sanitize any of the $_POST data because we're using the insert method which does it for us
+	        // Insert data
+	        // Note we didn't have to sanitize any of the $_POST data because we're using the insert method which does it for us
 	        $recipe_id = DB::instance(DB_NAME)->insert('recipes', $data);
 	        $link = "/recipes/recipe/".$recipe_id;
 	        echo "Your recipe was added. Click <a href=$link target=\"_blank\">here</a> to view it, or add another recipe!";
@@ -287,6 +282,7 @@ class recipes_controller extends base_controller {
 
     }
 
+    // This function generates the pages when users want to see a specific recipe, based on recipe ID
     public function recipe($recipe_id = NULL) {
 
         # Users cannot try to access this page unless logged in. They're sent to home if they do.
@@ -307,6 +303,7 @@ class recipes_controller extends base_controller {
         	$this->template->content->error = "False";
         }
        
+       	// Query to show all the relevant information for the recipe
         $q = "SELECT title, 
                     ingredients_list,
                     directions_list,
@@ -322,17 +319,17 @@ class recipes_controller extends base_controller {
 
         $recipe = DB::instance(DB_NAME)->select_rows($q);
 
-        # Build the query to figure out what connections/favorites the user already has
-   		# I.e. the recipes they've favorited already
+        // Build the query to figure out what connections/favorites the user already has
+   		// I.e. the recipes they've favorited already, to determine which buttons to show
     	$qfaves = "SELECT * 
 	        	FROM favorites
 	        	WHERE user_id = ".$this->user->user_id;
 
-    	# Execute this query with the select_array method
-    	# select_array will return our results in an array and use the "users_id_followed" field as the index.
+    	// Execute this query with the select_array method
+    	// select_array will return our results in an array and use the "users_id_followed" field as the index.
     	$connections = DB::instance(DB_NAME)->select_array($qfaves, 'recipe_id_favorited');
 
-    	#Decide if user is the one who uploaded this recipe
+    	// Decide if user is the one who uploaded this recipe
     	$username = $this->user->username;
     	$user_source = "<a href=\"/users/profile/".$username."\">".$username."</a>";
 
@@ -343,7 +340,7 @@ class recipes_controller extends base_controller {
     		$thisuserrecipe = "True";
     	}
     	
-        # Pass the data to the view
+        // Pass the data to the view
         $this->template->content->recipe = $recipe; 
         $this->template->content->connections = $connections; 
         $this->template->content->thisuserrecipe = $thisuserrecipe; 
@@ -353,18 +350,19 @@ class recipes_controller extends base_controller {
         
     }
 
+    // Function for the user to add his/her own recipe, through adding a title, ingredients, and directions
     public function add_your_own() {
 
-        # Users cannot try to access this page unless logged in. They're sent to home if they do.
+        // Users cannot try to access this page unless logged in. They're sent to home if they do.
         if(!$this->user) {
             Router::redirect('/');
         }
 
-        # Setup view
+        // Setup view
         $this->template->content = View::instance('v_recipes_add_your_own');
         $this->template->title   = "Add Your Own Recipe";
         
-        # Load JS files
+        // Load JS files
         $client_files_body = Array(
         	"/js/jquery.form.min.js",
         	"/js/own_recipe_add.js",
@@ -372,14 +370,15 @@ class recipes_controller extends base_controller {
         );
 
         $this->template->client_files_body = Utils::load_client_files($client_files_body);
-        # Render template
+        
+        // Render template
         echo $this->template;
 
     }
 
     public function p_add_your_own() {
        
-        # Load JS files
+        // Load JS files
         $client_files_body = Array(
         	"/js/jquery.form.min.js",
         	"/js/recipes_add.js",
@@ -393,22 +392,20 @@ class recipes_controller extends base_controller {
         	return;
         }
 
-        # Associate this recipe with this user who originally added it
+
+        // Associate this recipe with this user who originally added it
         $_POST['added_by']  = $this->user->username;
 
-        # Unix timestamp of when this post was created
+        // Unix timestamp of when this post was created
         $_POST['created']  = Time::now();
 
         $data = Array(
-		    'title' => $_POST['title'], 
-		    'ingredients_list' => nl2br($_POST['ingredients_list']), 
-		    'directions_list' =>  nl2br($_POST['directions_list']),
+		    'title' => htmlspecialchars($_POST['title']), 
+		    'ingredients_list' => nl2br(htmlspecialchars($_POST['ingredients_list'])), 
+		    'directions_list' =>  nl2br(htmlspecialchars($_POST['directions_list'])),
 		    'created' => $_POST['created'],
 		    'added_by' => $_POST['added_by'],
 		    'source' => "<a href=\"/users/profile/".$_POST['added_by']."\">".$_POST['added_by']."</a>");
-
-	    # Insert data
-        # Note we didn't have to sanitize any of the $_POST data because we're using the insert method which does it for us
 
         if($_FILES) {
 	        
@@ -440,7 +437,7 @@ class recipes_controller extends base_controller {
 
     }
 
-    #The below function shows the page where the user is asked if they really want to delete their recipe.
+    // The below function shows the page where the user is asked if they really want to delete their recipe.
     public function remove_your_own($recipe_id) {
     	
     	#Protect against others trying to delete a recipe
@@ -476,6 +473,7 @@ class recipes_controller extends base_controller {
 
     }
 
+    // Search for a recipe based off of one to five ingredients
 	public function search() {
 
 		# Setup view
@@ -593,6 +591,7 @@ class recipes_controller extends base_controller {
 
 	}
 
+	// Add a recipe to user's favorites
 	public function addfavorites($recipe_id) {
 
 		$title = DB::instance(DB_NAME)->select_field("SELECT title FROM recipes WHERE recipe_id = ".$recipe_id);
@@ -612,6 +611,7 @@ class recipes_controller extends base_controller {
 
 	}
 
+	// View user's favorited recipes
     public function favorites() {
 
 		# Users cannot try to access this page unless logged in. They're sent to home if they do.
@@ -636,6 +636,7 @@ class recipes_controller extends base_controller {
 
     }
 
+    // Remove a recipe from a user's favorites
     public function removefavorites($recipe_id) {
 
 		# Delete this favorite
@@ -645,14 +646,5 @@ class recipes_controller extends base_controller {
 		Router::redirect("/recipes/favorites");
 
 	}
-
-	
-
-
-
-
-
-    
-
 
 }

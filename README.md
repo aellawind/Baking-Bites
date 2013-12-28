@@ -25,3 +25,5 @@ Aspects Managed By Javascript
 ~ Search: I am using javascript to manage the display of the search results after inputting in ingredients
 ~ Add Recipes: I am using javascript to manage the feedback after submission of recipes through link inputs
 ~ Add Your Own Recipe: I am using javascript to manage the results after submitting your own recipe
+
+Notes: Users can only submit recipes from specific websites, for which I've written the code for proper parsing. 

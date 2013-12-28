@@ -233,6 +233,7 @@ class users_controller extends base_controller {
 
         # Insert submission into database if there is any data
         if($_POST) {
+            $_POST = array_map('strip_tags', $_POST); //don't allow special html tags
             $q = DB::instance(DB_NAME)->update('users', $_POST, "WHERE user_id = '".$this->user->user_id."'");
         }
 

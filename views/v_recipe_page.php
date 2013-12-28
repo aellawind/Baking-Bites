@@ -20,17 +20,17 @@
 		<h1><?=$rec['title']?></h1>
 
 		<?php if($rec['image_url'] != ""): ?>
-			<img src="<?=$rec['image_url']?>" class="recipe_image"/>
+			<img src="<?=$rec['image_url']?>" class="recipe_image" alt="bakedgoodpicture"/>
 		<?php endif;?>
 		<?php if($rec['recipeimages']): ?>
-			<img src="<?=$rec['recipeimages']?>" class="recipe_image"/>
+			<img src="<?=$rec['recipeimages']?>" class="recipe_image" alt="bakedgoodpicture"/>
 		<?php endif;?>
 		<br>
 		<p><b>Ingredients: </b><br><?=$rec['ingredients_list']?></p>
 		<p><b>Directions: <br></b><?=$rec['directions_list']?></p>
 		<p><b>Added by: </b><?=$rec['source']?></p>
 		<?php if($rec['url']): ?>
-			<p class="small">Taken from <a href='<?=$rec['url']?>' id="recipelinks"><?=$rec['url']?></a></p>
+			<p class="small">Taken from <a href='<?=$rec['url']?>' class="recipelinks"><?=$rec['url']?></a></p>
 		<?php endif;?>
 
 		<!-- If the user added this recipe, they can delete it-->

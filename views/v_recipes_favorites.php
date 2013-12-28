@@ -6,6 +6,7 @@
 	<?php if(!$favoriterecipes): ?>
 		<p class="margined">   You have no favorite recipes at this time. Search for some <a href='/recipes/search'>here</a> to add recipes to your collection!</p>
 	<?php endif ?>
+
 	<?php foreach($favoriterecipes as $favorite): ?>
 
 		<div class="faverecipe">
@@ -13,7 +14,6 @@
 		<a href='/recipes/recipe/<?=$favorite['recipe_id_favorited']?>' class="recipelinks"><?=$favorite['title']?></a>
 		</div>
 		<br>
-
 
 	<?php endforeach; ?>
 
