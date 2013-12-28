@@ -1,6 +1,6 @@
 <div class="recipe">
 
-	<?php if($error): ?>
+	<?php if($error=="True"): ?>
 		<p class = "margined">Sorry, the recipe you are looking for does not exist.</p>
 	<?php endif;?>
 
@@ -25,7 +25,7 @@
 		<?php if($rec['recipeimages']): ?>
 			<img src="<?=$rec['recipeimages']?>" class="recipe_image"/>
 		<?php endif;?>
-
+		<br>
 		<p><b>Ingredients: </b><br><?=$rec['ingredients_list']?></p>
 		<p><b>Directions: <br></b><?=$rec['directions_list']?></p>
 		<p><b>Added by: </b><?=$rec['source']?></p>

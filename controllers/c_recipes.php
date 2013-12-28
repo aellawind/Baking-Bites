@@ -36,12 +36,29 @@ class recipes_controller extends base_controller {
 
     }
 
+
+
     public function p_add_recipes() {
     	
+    	
+    	$_POST = DB::instance(DB_NAME)->sanitize($_POST);
+
+
     	if($_POST['url'] == "") {
     		echo "Please enter a link.";
     		return;
     	}
+
+    	#set up the recipe query
+    	$q = "SELECT recipe_id FROM recipes where url = '".$_POST['url']."'";
+    	#query the database for that link
+    	$url_exists = DB::instance(DB_NAME)->select_field($q);
+    	#check if it exists in the database
+    	if(!empty($url_exists)) {
+    		echo "That recipe already exists. Click <a href=\"/recipes/recipe/".$url_exists."\">here</a> to see it.";
+    		return;
+    	}
+
     	# Associate this recipe with this user who originally added it
         $_POST['added_by']  = $this->user->username;
 
@@ -285,6 +302,9 @@ class recipes_controller extends base_controller {
         echo "THIS", $recipeexists;
         if (trim($recipeexists) == "") {
         	$this->template->content->error = "True";
+        }
+        else {
+        	$this->template->content->error = "False";
         }
        
         $q = "SELECT title, 
