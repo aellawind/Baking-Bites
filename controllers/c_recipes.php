@@ -73,7 +73,7 @@ class recipes_controller extends base_controller {
 		}
 		else if (stripos($_POST['url'], 'tasteofhome') !== false) {
         	// TASTE OF HOME RECIPES
-        	$source = "<a href=\"tasteofhome.com\">Taste of Home</a>";
+        	$source = "<a href=\"http://www.tasteofhome.com\">Taste of Home</a>";
 	        $results = Utils::curl($_POST['url']);
 	        // Get the recipe title
 	        $title = trim(strip_tags(scrape_between($results, "<title>", " | Taste of Home</title>"),'<p><b><i>'));
@@ -110,7 +110,7 @@ class recipes_controller extends base_controller {
         else if (stripos($_POST['url'], 'allrecipes') !== false) {
        
 	        //ALLRECIPES 
-	        $source = "<a href=\"allrecipes.com\">Allrecipes</a>";
+	        $source = "<a href=\"http://www.allrecipes.com\">Allrecipes</a>";
 	        $results = Utils::curl($_POST['url']);
 	        // Get the title
 	        $title = trim(strip_tags(scrape_between($results, "<title>", "- Allrecipes.com"),'<p><b><i>'));
@@ -146,7 +146,7 @@ class recipes_controller extends base_controller {
         else if (stripos($_POST['url'], 'epicurious') !== false) {
        
 	        //EPICURIOUS
-	        $source = "<a href=\"epicurious.com\">Epicurious</a>";
+	        $source = "<a href=\"http://www.epicurious.com\">Epicurious</a>";
 	        $results = Utils::curl($_POST['url']);
 	        // Get the title
 	        $title = trim(strip_tags(scrape_between($results, "<title>", " | Epicurious.com"),'<p><b><i>'));
@@ -155,7 +155,7 @@ class recipes_controller extends base_controller {
 	        $image = "http://www.epicurious.com".trim(scrape_between($imageblock, "<img src=\"", "\""));
 
 	        // Get the ingredients block
-	        $ingredients_list = scrape_between($results, "<div id=\"ingredients\">", "</ul>");
+	        $ingredients_list = scrape_between($results, "<div id=\"ingredients\">", "<div id=\"preparation\"");
 	        $separate_ingredients = explode("<li class=\"ingredient\">", $ingredients_list);
 	        foreach ($separate_ingredients as $separate_ingredient) {
 	        	if ($separate_ingredient !="") {
@@ -184,7 +184,7 @@ class recipes_controller extends base_controller {
         else if (stripos($_POST['url'], 'simplyrecipes') !== false) {
 
 	        // Simply Recipes
-	        $source = "<a href=\"simplyrecipes.com\">SimplyRecipes</a>";
+	        $source = "<a href=\"http://www.simplyrecipes.com\">SimplyRecipes</a>";
 	        $results = Utils::curl($_POST['url']);
 	        // Get the title
 	        $title = trim(strip_tags(scrape_between($results, "<title>", " | Simply Recipes"),'<p><b><i>'));
@@ -220,7 +220,7 @@ class recipes_controller extends base_controller {
 
 	    else if (stripos($_POST['url'], 'verybestbaking') !== false) {
 	        // Very Best baking
-	        $source = "<a href=\"verybestbaking.com\">VeryBestBaking</a>";
+	        $source = "<a href=\"http://www.verybestbaking.com\">VeryBestBaking</a>";
 	        $results = Utils::curl($_POST['url']);
 	        // Get the title
 	        $title = trim(strip_tags(scrape_between($results, "<title>", "</title>"),'<p><b><i>'));
@@ -243,7 +243,7 @@ class recipes_controller extends base_controller {
 	        $separate_directions = explode("<div class=", $directions_list);
 	        foreach ($separate_directions as $separate_direction) {
 	        	if ($separate_direction !="") {
-	        		$direction = trim(strip_tags(scrape_between($separate_direction, "\"instructions\">", "</div>"),'<p><b><i>'));
+	        		$direction = trim(strip_tags(scrape_between($separate_direction, "\"instructions\">", "</div>"),'<p><br><b><i>'));
 	        		if ($direction != "") {
 	        			$result_directions[] = $direction;
 	        		}

@@ -196,6 +196,7 @@ ul li.active a{
 	width:305px;
 	height:295px;
 	position:relative;
+	overflow:hidden;
 }
 
 .right {
