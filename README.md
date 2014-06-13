@@ -1,9 +1,9 @@
-p4.amiraanuar.com
+Baking Bites
 =================
 
-P4 for CS-15 Dynamic Web Applications. Baking/Cooking Recipes Generator.
+Baking/Cooking Recipes Generator.
 
-I'm an avid baker, but sometimes I don't always have a ton of ingredients. I've always wished there were some sort of website where I could just type in ingredients and it would output recipes that I could make--a filter of sorts. That is what my app revolves around. Users can log in and search through a database of recipes based on one to five ingredients. The search will query the database (which if it were a real app, would have many more recipes but currently just has a small sample) and then return all the recipes that have those ingredients.
+I'm an avid baker, but sometimes I don't always have a ton of ingredients. I've always wished there were some sort of website where I could just type in ingredients and it would output recipes that I could make--a filter of sorts. That is what my app revolves around (written with PHP, JavaScript, Ajax). Users can log in and search through a database of recipes based on one to five ingredients. The search will query the database (which if it were a real app, would have many more recipes but currently just has a small sample) and then return all the recipes that have those ingredients.
 
 ~ Sign up 
 ~ Log in/ log out
